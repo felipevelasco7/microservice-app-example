@@ -15,7 +15,6 @@ exports.cssLoaders = function (options) {
   var cssLoader = {
     loader: 'css-loader',
     options: {
-      minimize: process.env.NODE_ENV === 'production',
       sourceMap: options.sourceMap
     }
   }
@@ -24,12 +23,24 @@ exports.cssLoaders = function (options) {
   function generateLoaders (loader, loaderOptions) {
     var loaders = [cssLoader]
     if (loader) {
-      loaders.push({
-        loader: loader + '-loader',
-        options: Object.assign({}, loaderOptions, {
-          sourceMap: options.sourceMap
+      // special handling for sass-loader to set the implementation and options
+      if (loader === 'sass') {
+        loaders.push({
+          loader: 'sass-loader',
+          options: Object.assign({}, loaderOptions, {
+            implementation: require('sass'),
+            sassOptions: loaderOptions && loaderOptions.indentedSyntax ? { indentedSyntax: true } : {},
+            sourceMap: options.sourceMap
+          })
         })
-      })
+      } else {
+        loaders.push({
+          loader: loader + '-loader',
+          options: Object.assign({}, loaderOptions, {
+            sourceMap: options.sourceMap
+          })
+        })
+      }
     }
 
     // Extract CSS when that option is specified

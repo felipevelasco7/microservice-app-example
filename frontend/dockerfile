@@ -1,0 +1,21 @@
+# Dockerfile para frontend
+FROM node:16-bullseye-slim AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# Install build deps and make sure python symlink exists for node-gyp where needed
+RUN apt-get update && apt-get install -y python3 build-essential && ln -sf /usr/bin/python3 /usr/bin/python
+
+# Use legacy-peer-deps to avoid ERESOLVE failures with older peerDependency constraints
+RUN npm install --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build
+
+FROM nginx:stable
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

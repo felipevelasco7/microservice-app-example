@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-api
+  template:
+    metadata:
+      labels:
+        app: auth-api
+    spec:
+      containers:
+      - name: auth-api
+        image: felipevelasco7/auth-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: AUTH_API_PORT
+          value: "8000"
+        - name: USERS_API_ADDRESS
+          value: "http://users-api:8080"
+---
+apiVersion: 
