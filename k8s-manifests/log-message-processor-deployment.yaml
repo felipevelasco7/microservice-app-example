@@ -15,3 +15,10 @@ spec:
       containers:
       - name: log-message-processor
         image: felipevelasco7/log-message-processor:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_CHANNEL
+          value: "log_channel"
