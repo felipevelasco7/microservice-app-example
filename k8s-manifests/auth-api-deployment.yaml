@@ -23,4 +23,14 @@ spec:
         - name: USERS_API_ADDRESS
           value: "http://users-api:8080"
 ---
-apiVersion: 
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-api
+spec:
+  selector:
+    app: auth-api
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
