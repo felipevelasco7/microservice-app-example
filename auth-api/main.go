@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -24,7 +25,11 @@ var (
 )
 
 func main() {
-	hostport := ":" + os.Getenv("AUTH_API_PORT")
+	hostport := os.Getenv("AUTH_API_PORT")
+	if !strings.HasPrefix(hostport, ":") {
+		hostport = ":" + hostport
+	}
+
 	userAPIAddress := os.Getenv("USERS_API_ADDRESS")
 
 	envJwtSecret := os.Getenv("JWT_SECRET")

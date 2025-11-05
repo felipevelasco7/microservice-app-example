@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: log-message-processor-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: log-message-processor
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: todos-api
+    ports:
+    - protocol: TCP
+      port: 6379

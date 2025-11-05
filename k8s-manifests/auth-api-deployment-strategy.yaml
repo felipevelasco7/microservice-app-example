@@ -2,10 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-api
-  labels:
-    app: auth-api
+  namespace: default
 spec:
   replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: auth-api
@@ -19,9 +23,3 @@ spec:
         image: felipevelasco7/auth-api:latest
         ports:
         - containerPort: 8000
-        env:
-        - name: AUTH_API_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: auth-api-config
- 

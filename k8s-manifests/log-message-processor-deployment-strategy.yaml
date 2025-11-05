@@ -2,8 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: log-message-processor
+  namespace: default
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: log-message-processor
@@ -15,3 +21,5 @@ spec:
       containers:
       - name: log-message-processor
         image: felipevelasco7/log-message-processor:latest
+        ports:
+        - containerPort: 6379

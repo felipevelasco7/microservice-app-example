@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todos-api
+  namespace: default
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: todos-api
+  template:
+    metadata:
+      labels:
+        app: todos-api
+    spec:
+      containers:
+      - name: todos-api
+        image: felipevelasco7/todos-api:latest
+        ports:
+        - containerPort: 3000

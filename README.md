@@ -208,3 +208,94 @@ Inicialmente la imagen podía ejecutar `http-server` en el puerto 8080. Para un 
 kubectl delete -f k8s-manifests/
 ```
 
+## Aplicar Network Policies
+
+Las Network Policies permiten controlar el tráfico de red entre los pods y servicios en el clúster. A continuación, se muestra cómo aplicar una política de red básica para restringir el acceso a un microservicio.
+
+
+
+### Aplicar Network Policies
+
+Para aplicar las políticas de red a los microservicios, sigue estos pasos:
+
+1. Aplica cada archivo de NetworkPolicy:
+
+```bash
+kubectl apply -f k8s-manifests/auth-api-network-policy.yaml
+kubectl apply -f k8s-manifests/todos-api-network-policy.yaml
+kubectl apply -f k8s-manifests/log-message-processor-network-policy.yaml
+kubectl apply -f k8s-manifests/frontend-network-policy.yaml
+kubectl apply -f k8s-manifests/users-api-network-policy.yaml
+```
+
+2. Verifica que las políticas se hayan aplicado correctamente:
+
+```bash
+kubectl get networkpolicy
+```
+
+### Configurar ConfigMaps
+
+Los ConfigMaps permiten gestionar las variables de entorno y configuraciones de los microservicios. Sigue estos pasos para aplicarlos:
+
+1. Aplica cada archivo de ConfigMap:
+
+```bash
+kubectl apply -f k8s-manifests/auth-api-configmap.yaml
+kubectl apply -f k8s-manifests/todos-api-configmap.yaml
+kubectl apply -f k8s-manifests/log-message-processor-configmap.yaml
+kubectl apply -f k8s-manifests/frontend-configmap.yaml
+kubectl apply -f k8s-manifests/users-api-configmap.yaml
+```
+
+2. Verifica que los ConfigMaps se hayan aplicado correctamente:
+
+```bash
+kubectl get configmaps
+```
+
+### Configurar Horizontal Pod Autoscaler (HPA)
+
+El HPA permite escalar automáticamente los pods según el uso de recursos. Sigue estos pasos para aplicarlos:
+
+1. Aplica cada archivo de HPA:
+
+```bash
+kubectl apply -f k8s-manifests/auth-api-hpa.yaml
+kubectl apply -f k8s-manifests/todos-api-hpa.yaml
+kubectl apply -f k8s-manifests/log-message-processor-hpa.yaml
+kubectl apply -f k8s-manifests/frontend-hpa.yaml
+kubectl apply -f k8s-manifests/users-api-hpa.yaml
+```
+
+2. Verifica que los HPA se hayan aplicado correctamente:
+
+```bash
+kubectl get hpa
+```
+
+### Configurar Estrategias de Despliegue
+
+Las estrategias de despliegue permiten realizar actualizaciones continuas (rolling updates) o despliegues canarios para minimizar el tiempo de inactividad. Sigue estos pasos para aplicarlas:
+
+1. Aplica cada archivo de estrategia de despliegue:
+
+```bash
+kubectl apply -f k8s-manifests/auth-api-deployment-strategy.yaml
+kubectl apply -f k8s-manifests/todos-api-deployment-strategy.yaml
+kubectl apply -f k8s-manifests/log-message-processor-deployment-strategy.yaml
+kubectl apply -f k8s-manifests/frontend-deployment-strategy.yaml
+kubectl apply -f k8s-manifests/users-api-deployment-strategy.yaml
+```
+
+2. Verifica que los despliegues se hayan actualizado correctamente:
+
+```bash
+kubectl rollout status deployment/auth-api
+kubectl rollout status deployment/todos-api
+kubectl rollout status deployment/log-message-processor
+kubectl rollout status deployment/frontend
+kubectl rollout status deployment/users-api
+```
+
+
