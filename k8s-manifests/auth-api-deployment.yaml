@@ -24,4 +24,9 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: auth-api-config
- 
+              key: AUTH_API_PORT
+        - name: USERS_API_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: auth-api-config
+              key: USERS_API_ADDRESS

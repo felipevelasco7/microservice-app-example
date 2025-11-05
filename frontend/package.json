@@ -77,4 +77,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  
+  "main": ".eslintrc.js",
+  "keywords": [],
+  "license": "ISC"
+}
