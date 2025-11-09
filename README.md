@@ -203,10 +203,7 @@ Inicialmente la imagen podía ejecutar `http-server` en el puerto 8080. Para un 
    - Prefiere `minikube service frontend` o usa NodePort.
    - Con nginx en puerto 80, `kubectl port-forward svc/frontend 8080:80` suele ser más estable que con `http-server` en 8080.
 
-### Limpieza
-```bash
-kubectl delete -f k8s-manifests/
-```
+
 
 ## Aplicar Network Policies
 
@@ -298,4 +295,102 @@ kubectl rollout status deployment/frontend
 kubectl rollout status deployment/users-api
 ```
 
+## Implementación de Monitoreo con Prometheus y Grafana
 
+### Despliegue de Prometheus
+1. Aplica el manifiesto de Prometheus:
+   ```bash
+   kubectl apply -f k8s-manifests/prometheus-deployment.yaml
+   ```
+2. Accede a Prometheus en tu navegador:
+   ```
+   http://<minikube-ip>:30000
+   ```
+
+### Despliegue de Grafana
+1. Aplica el manifiesto de Grafana:
+```bash
+   kubectl apply -f k8s-manifests/grafana-deployment.yaml
+   # verificar
+   kubectl get svc
+   ```
+2. Accede a Grafana en tu navegador:
+   ```
+   http://<minikube-ip>:30001
+   ```
+   - Usuario: `admin`
+   - Contraseña: `admin`
+
+### Configuración de Grafana
+1. Agrega Prometheus como fuente de datos:
+   - Ve a **Configuration > Data Sources**.
+   - Selecciona **Prometheus**.
+   - Ingresa la URL: `http://prometheus:9090`.
+
+2. Importa dashboards predefinidos:
+   - Ve a **Dashboards > Import**.
+   - Usa un ID de dashboard de la comunidad, como `315` (Kubernetes cluster monitoring).
+
+### Verificación
+- Asegúrate de que Prometheus esté recopilando métricas de tus microservicios.
+- Visualiza las métricas en los dashboards de Grafana.
+
+### Limpieza completa (recursos, Minikube y imágenes locales)
+
+Si quieres dejar tu máquina en el mismo estado en el que estaba antes de desplegar todo, sigue uno de los tres niveles siguientes según lo destructivo que quieras ser.
+
+1) Solo Kubernetes (eliminar los recursos aplicados desde este repo)
+
+```bash
+# Elimina todos los recursos definidos en el directorio de manifiestos
+kubectl delete -f k8s-manifests/
+
+# Verifica que los pods y servicios hayan sido eliminados
+kubectl get pods -A
+kubectl get svc -A
+```
+
+2) Kubernetes + detener/eliminar Minikube (elimina también el cluster local)
+
+Esto eliminará el cluster Minikube y su estado (volúmenes, PVs, datos en el cluster).
+
+```bash
+# Primero elimina recursos dentro del cluster
+kubectl delete -f k8s-manifests/ || true
+
+# Detener Minikube (intento no destructivo)
+minikube stop || true
+
+# Si quieres borrar todo (destructivo) y recrear después, usa:
+minikube delete
+
+# Para recrear el cluster (opcional):
+minikube start --driver=docker
+```
+
+3) Limpieza completa incluyendo imágenes Docker locales (opcional y destructivo)
+
+WARNING: Esto eliminará imágenes que hayas construido localmente. Asegúrate de que no las necesites.
+
+```bash
+# Lista las imágenes que el repo creó (ejemplos)
+docker images --filter=reference='felipevelasco7/*'
+
+# Elimina imágenes específicas (ejemplo):
+docker rmi felipevelasco7/frontend:latest felipevelasco7/auth-api:latest \
+   felipevelasco7/todos-api:latest felipevelasco7/log-message-processor:latest felipevelasco7/users-api:latest || true
+
+```
+
+
+## Foto evidencia
+![foto](fotos/foto1.png)
+![foto](fotos/foto2.png)
+![foto](fotos/foto3.png)
+![foto](fotos/foto4.png)
+![foto](fotos/foto5.png)
+![foto](fotos/foto6.png)
+![foto](fotos/foto7.png)
+![foto](fotos/foto8.png)
+![foto](fotos/foto9.png)
+![foto](fotos/foto10.png)
